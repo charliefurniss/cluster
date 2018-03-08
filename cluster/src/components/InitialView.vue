@@ -107,13 +107,17 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0 16px 0 56px;
+  @media screen and (min-width: 1025px) {
+    padding: 0 24px 0 64px;
+  }
   .result {
     display: flex;
     flex-direction: column;
+    align-self: stretch;
     flex-shrink: 0;
     padding-top: 16px;
     text-align: left;
-    width: 70%;
     &__item {
       margin-bottom: 8px;
       span {
