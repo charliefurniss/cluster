@@ -22,7 +22,11 @@
           </div>
           <div class="result__item">
             <span class="result__item-label">Last used date</span>
-            <span class="result__item-value">{{data.LastModified}}</span>
+            <span class="result__item-value">{{data.LastUsed}}</span>
+          </div>
+          <div class="result__item">
+            <span class="result__item-label">Extension</span>
+            <span class="result__item-value">{{data.Extension}}</span>
           </div>
         </div>
       </section>
@@ -32,6 +36,8 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   name: 'InitialView',
   data () {
@@ -41,7 +47,6 @@ export default {
   },
   created: async function () {
     this.data = await this.getData()
-    console.log(this.data);
   },
   methods: {
     getData: function () {
@@ -51,6 +56,46 @@ export default {
         }
       })
       .then(res => res.json())
+      .then(json => this.formatData(json))
+    },
+    formatData: function (data) {
+      const dataItems = [...data];
+      return dataItems.map(item => {
+        const Path = this.formatPath(item.Path);
+        const Size = this.formatSize(item.Size);
+        const Extension = this.getExtension(item.Path);
+        const LastUsed = this.setLastUsed(item);
+        return {
+          Path,
+          Size,
+          Extension,
+          LastUsed
+        }
+      })
+    },
+    formatPath: function (path) {
+      const pathWithoutExtension = path.substring(0, path.indexOf('.'));
+
+      return this.correctPathSlashes(pathWithoutExtension);
+    },
+    correctPathSlashes: function (string) {
+      const stringWithFirstTwoCharactersRemoved = string.substr(2);
+      
+      return stringWithFirstTwoCharactersRemoved.replace(/\\/g,'/');
+    },
+    formatSize: function (size) {
+      const megaBytes = size / 1000000;
+      const roundedSize = Math.round(megaBytes * 10) / 10;
+      return `${roundedSize}MB`;
+    },
+    getExtension: function (path) {
+      return path.split('.').pop().toLowerCase();
+    },
+    setLastUsed: function (item) {
+      return (item.Created > item.LastModified) ? this.formatDate(item.Created) : this.formatDate(item.LastModified);
+    },
+    formatDate: function (unformattedDate) {
+      return moment(unformattedDate).format('D MMM YYYY, h:mma');
     }
   }
 }
@@ -66,7 +111,7 @@ export default {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    padding: 16px;
+    padding-top: 16px;
     text-align: left;
     width: 70%;
     &__item {
@@ -75,10 +120,10 @@ export default {
         display: block;
       }
       &-label {
-
+        font-size: 12px;
       }
       &-value {
-
+        font-weight: 500;
       }
     }
   }

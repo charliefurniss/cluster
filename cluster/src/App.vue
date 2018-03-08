@@ -37,6 +37,7 @@ html, body {
     flex-direction: column;
     justify-content: center;
     flex: 1 1 auto;
+    overflow-y: auto;
   }
 }
 </style>
