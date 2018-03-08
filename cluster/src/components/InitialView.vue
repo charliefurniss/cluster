@@ -3,13 +3,12 @@
     <header class="mdl-layout__header">
       <div class="mdl-layout-icon"></div>
       <div class="mdl-layout__header-row">
-        <span class="mdl-layout__title">Cluster search</span>
+        <span class="mdl-layout__title">Cluster scans</span>
       </div>
     </header>
     <main class="content">
       <section class="search">
         <select class="select" v-model="searchOption" v-on:change="onSelectChange">
-          <option class="select__placeholder" selected value="">Please select a scan</option>
           <option value="1">Ones scan</option>
           <option value="3">Tens scan</option>
           <option value="0">Hundreds scan</option>
@@ -17,6 +16,13 @@
           <option value="4">Tens of thousands scan</option>
           <option value="2">Full scan</option>
         </select>
+        <label v-show="isSelectUnchanged">Please select a scan</label>
+      </section>
+      <section class="filter">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" id="filePathInput" v-model="filePathInput" v-on:change="onFilePathInputChange">
+          <label class="mdl-textfield__label" for="filePathInput">Search on the filepath...</label>
+        </div>
       </section>
       <section class="results">
         <div class="result" v-for="data in data" v-bind:key="data.id">
@@ -51,15 +57,18 @@ export default {
   data () {
     return {
       data: [],
-      searchOption: null
+      isSelectUnchanged: true,
+      searchOption: null,
+      filePathInput: ''
     }
-  },
-  created: function () {
-    
   },
   methods: {
     onSelectChange: async function () {
-      this.data = await this.getData()
+      this.isSelectUnchanged = false;
+      this.data = await this.getData();
+    },
+    onFilePathInputChange: function () {
+      this.updateData();
     },
     getData: function () {
       const resultsIndex = this.searchOption;
@@ -72,6 +81,16 @@ export default {
       })
       .then(res => res.json())
       .then(json => this.formatData(json))
+    },
+    updateData: function () {
+      const filterValue = this.filePathInput;
+
+      this.data = this.filterData(filterValue);
+    },
+    filterData: function () {
+      return this.data.filter(item => {
+        return item.Path.indexOf(filterValue) !== -1;
+      })
     },
     formatData: function (data) {
       const dataItems = [...data];
@@ -117,13 +136,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.search {
+.search, .filter {
   display: flex;
   flex-shrink: 0;
   align-items: center;
   height: 64px;
+  position: relative;
+}
+.search {
   .select {
-    
+    outline: none;
+    height: 32px;
+    background-color: #fff;
+    border-radius: 4px;
+    width: 200px;
+    padding: 24px;
+  }
+  label {
+    position: absolute;
+    left: 10px;
+    font-size: 12px;
   }
   button {
     margin-left: 32px;
