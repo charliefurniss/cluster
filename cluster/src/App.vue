@@ -37,8 +37,10 @@ html, body {
     flex-direction: column;
     justify-content: center;
     flex: 1 1 auto;
-    overflow-y: auto;
-    padding: 16px;
+    padding: 16px 16px 16px 72px;
+    @media screen and (min-width: 1025px) {
+      padding: 24px 24px 24px 80px;
+    }
   }
 }
 </style>

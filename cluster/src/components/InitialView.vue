@@ -8,7 +8,15 @@
     </header>
     <main class="content">
       <section class="search">
-        
+        <select class="select" v-model="searchOption" v-on:change="onSelectChange">
+          <option class="select__placeholder" selected value="">Please select a scan</option>
+          <option value="1">Ones scan</option>
+          <option value="3">Tens scan</option>
+          <option value="0">Hundreds scan</option>
+          <option value="5">Thousands scan</option>
+          <option value="4">Tens of thousands scan</option>
+          <option value="2">Full scan</option>
+        </select>
       </section>
       <section class="results">
         <div class="result" v-for="data in data" v-bind:key="data.id">
@@ -42,15 +50,22 @@ export default {
   name: 'InitialView',
   data () {
     return {
-      data: []
+      data: [],
+      searchOption: null
     }
   },
-  created: async function () {
-    this.data = await this.getData()
+  created: function () {
+    
   },
   methods: {
+    onSelectChange: async function () {
+      this.data = await this.getData()
+    },
     getData: function () {
-      return fetch('http://c7webtest.azurewebsites.net/searches/0/results?start=0&size=5', {
+      const resultsIndex = this.searchOption;
+      const url = `http://c7webtest.azurewebsites.net/searches/${resultsIndex}/results?start=0&size=5`
+      
+      return fetch(url, {
         headers: {
           'content-type': 'application/json'
         }
@@ -101,16 +116,25 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.search {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  height: 64px;
+  .select {
+    
+  }
+  button {
+    margin-left: 32px;
+  }
+}
 .results {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 16px 0 56px;
-  @media screen and (min-width: 1025px) {
-    padding: 0 24px 0 64px;
-  }
+  flex: 1;
+  overflow-y: auto;
   .result {
     display: flex;
     flex-direction: column;
