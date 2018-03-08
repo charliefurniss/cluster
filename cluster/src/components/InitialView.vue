@@ -18,11 +18,14 @@
         </select>
         <label v-show="isSelectUnchanged">Please select a scan</label>
       </section>
-      <section class="filter">
+      <section v-show="showFilter" class="filter">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <input class="mdl-textfield__input" type="text" id="filePathInput" v-model="filePathInput" v-on:change="onFilePathInputChange">
+          <input class="mdl-textfield__input" type="text" id="filePathInput" v-model="filePathInput">
           <label class="mdl-textfield__label" for="filePathInput">Search on the filepath...</label>
         </div>
+        <button v-on:change="onFilePathInput" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+          Button
+        </button>
       </section>
       <section class="results">
         <div class="result" v-for="data in data" v-bind:key="data.id">
@@ -59,20 +62,22 @@ export default {
       data: [],
       isSelectUnchanged: true,
       searchOption: null,
+      showFilter: false,
       filePathInput: ''
     }
   },
   methods: {
     onSelectChange: async function () {
       this.isSelectUnchanged = false;
+      this.showFilter = true;
       this.data = await this.getData();
     },
-    onFilePathInputChange: function () {
+    onFilePathInput: function () {
       this.updateData();
     },
     getData: function () {
       const resultsIndex = this.searchOption;
-      const url = `http://c7webtest.azurewebsites.net/searches/${resultsIndex}/results?start=0&size=5`
+      const url = `http://c7webtest.azurewebsites.net/searches/${resultsIndex}/results?start=0&size=50`
       
       return fetch(url, {
         headers: {
@@ -87,7 +92,7 @@ export default {
 
       this.data = this.filterData(filterValue);
     },
-    filterData: function () {
+    filterData: function (filterValue) {
       return this.data.filter(item => {
         return item.Path.indexOf(filterValue) !== -1;
       })
@@ -157,6 +162,8 @@ export default {
     left: 10px;
     font-size: 12px;
   }
+}
+.filter {
   button {
     margin-left: 32px;
   }

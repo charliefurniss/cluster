@@ -2,6 +2,14 @@
 
 > A Vue.js project
 
+## Assessment
+
+I have only partially met the task criteria. 
+
+I am displaying results of search based on scan-type on the page and have a crude function to filter the data by path name.
+
+Because I haven't yet paginated the data, I have limited the API call to size=50.
+
 ## Build Setup
 
 ``` bash
@@ -10,12 +18,3 @@ npm install
 
 # serve with hot reload at localhost:8080
 npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
