@@ -15,7 +15,7 @@
           <option value="5">Thousands scan</option>
           <option value="4">Tens of thousands scan</option>
         </select>
-        <label v-show="isSelectUnchanged">Please select a scan</label>
+        <label v-show="!isSelectActive">Please select a scan</label>
       </section>
       <section class="filter">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -26,7 +26,7 @@
           Button
         </button>
       </section>
-      <section class="results">
+      <section v-show="showResults" class="results">
         <div class="results__tally">
           <h6>Total results: {{totalResults}}</h6>
         </div>
@@ -62,29 +62,32 @@ export default {
   data () {
     return {
       data: [],
-      isSelectUnchanged: true,
+      isSelectActive: false,
       searchOption: null,
       showFilter: false,
       filePathInput: '',
-      showResults: false
+      showResults: null
     }
   },
   computed: {
     totalResults: function ()  {
       return this.data.length;
-    }
+    },
   },
   methods: {
     onSelectChange: async function () {
-      this.isSelectUnchanged = false;
+      this.isSelectActive = true;
       this.data = await this.getData();
+      this.showResults = true;
     },
     onFilePathInput: async function () {
       const FULL_SCAN_INDEX = 2;
+      const fullScanData = await this.getData(FULL_SCAN_INDEX);
+      const filterValue = this.filePathInput;
 
-      this.data = await this.getData(FULL_SCAN_INDEX);
+      this.data = this.filterData(filterValue, fullScanData);
 
-      this.updateData();
+      this.showResults = true;
     },
     getData: function (fullScanIndex) {
       const resultsIndex = fullScanIndex ? fullScanIndex : this.searchOption;
@@ -98,18 +101,14 @@ export default {
       .then(res => res.json())
       .then(json => this.formatData(json))
     },
-    updateData: function () {
-      const filterValue = this.filePathInput;
-
-      this.data = this.filterData(filterValue);
-    },
-    filterData: function (filterValue) {
-      return this.data.filter(item => {
+    filterData: function (filterValue, fullScanData) {
+      return fullScanData.filter(item => {
         return item.Path.indexOf(filterValue) !== -1;
       })
     },
     formatData: function (data) {
       const dataItems = [...data];
+
       return dataItems.map(item => {
         const Path = this.formatPath(item.Path);
         const Size = this.formatSize(item.Size);
@@ -182,9 +181,15 @@ export default {
 .results {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   flex: 1;
   overflow-y: auto;
+  &__tally {
+    font-weight: 500;
+    h6 {
+      color: rgb(63,81,181);
+    }
+  }
   .result {
     display: flex;
     flex-direction: column;
@@ -200,6 +205,7 @@ export default {
       }
       &-label {
         font-size: 12px;
+        color: rgb(63,81,181);
       }
       &-value {
         font-weight: 500;
