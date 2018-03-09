@@ -14,20 +14,22 @@
           <option value="0">Hundreds scan</option>
           <option value="5">Thousands scan</option>
           <option value="4">Tens of thousands scan</option>
-          <option value="2">Full scan</option>
         </select>
         <label v-show="isSelectUnchanged">Please select a scan</label>
       </section>
-      <section v-show="showFilter" class="filter">
+      <section class="filter">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
           <input class="mdl-textfield__input" type="text" id="filePathInput" v-model="filePathInput">
-          <label class="mdl-textfield__label" for="filePathInput">Search on the filepath...</label>
+          <label class="mdl-textfield__label" for="filePathInput">Search by the filepath...</label>
         </div>
-        <button v-on:change="onFilePathInput" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+        <button v-on:click="onFilePathInput" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
           Button
         </button>
       </section>
       <section class="results">
+        <div class="results__tally">
+          <h6>Total results: {{totalResults}}</h6>
+        </div>
         <div class="result" v-for="data in data" v-bind:key="data.id">
           <div class="result__item">
             <span class="result__item-label">File path</span>
@@ -63,21 +65,30 @@ export default {
       isSelectUnchanged: true,
       searchOption: null,
       showFilter: false,
-      filePathInput: ''
+      filePathInput: '',
+      showResults: false
+    }
+  },
+  computed: {
+    totalResults: function ()  {
+      return this.data.length;
     }
   },
   methods: {
     onSelectChange: async function () {
       this.isSelectUnchanged = false;
-      this.showFilter = true;
       this.data = await this.getData();
     },
-    onFilePathInput: function () {
+    onFilePathInput: async function () {
+      const FULL_SCAN_INDEX = 2;
+
+      this.data = await this.getData(FULL_SCAN_INDEX);
+
       this.updateData();
     },
-    getData: function () {
-      const resultsIndex = this.searchOption;
-      const url = `http://c7webtest.azurewebsites.net/searches/${resultsIndex}/results?start=0&size=50`
+    getData: function (fullScanIndex) {
+      const resultsIndex = fullScanIndex ? fullScanIndex : this.searchOption;
+      const url = `http://c7webtest.azurewebsites.net/searches/${resultsIndex}/results?start=0&size=10000`
       
       return fetch(url, {
         headers: {
@@ -181,6 +192,7 @@ export default {
     flex-shrink: 0;
     padding-top: 16px;
     text-align: left;
+    border-bottom: 1px solid rgba(0,0,0,0.12);
     &__item {
       margin-bottom: 8px;
       span {
