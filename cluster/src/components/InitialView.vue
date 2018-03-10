@@ -20,10 +20,10 @@
       <section class="filter">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
           <input class="mdl-textfield__input" type="text" id="filePathInput" v-model="filePathInput">
-          <label class="mdl-textfield__label" for="filePathInput">Search by the filepath...</label>
+          <label class="mdl-textfield__label" for="filePathInput">Enter name of the filepath...</label>
         </div>
-        <button v-on:click="onFilePathInput" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-          Button
+        <button v-on:click="displaySearchResults" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+          Search
         </button>
       </section>
       <section v-show="showResults" class="results">
@@ -75,22 +75,24 @@ export default {
     },
   },
   methods: {
-    onSelectChange: async function () {
+    onSelectChange: function () {
       this.isSelectActive = true;
-      this.data = await this.getData();
+      this.displaySearchResults();
+    },
+    displaySearchResults: async function () {
+      this.showResults = false;
+      this.data = await this.searchData();
       this.showResults = true;
     },
-    onFilePathInput: async function () {
+    searchData: async function () {
+      const data = await this.getData();
+      const searchString = this.filePathInput;
+
+      return this.filePathInput ? this.filterData(searchString, data) : data;
+    },
+    getData: function () {
       const FULL_SCAN_INDEX = 2;
-      const fullScanData = await this.getData(FULL_SCAN_INDEX);
-      const filterValue = this.filePathInput;
-
-      this.data = this.filterData(filterValue, fullScanData);
-
-      this.showResults = true;
-    },
-    getData: function (fullScanIndex) {
-      const resultsIndex = fullScanIndex ? fullScanIndex : this.searchOption;
+      const resultsIndex = this.searchOption || FULL_SCAN_INDEX;
       const url = `http://c7webtest.azurewebsites.net/searches/${resultsIndex}/results?start=0&size=10000`
       
       return fetch(url, {
@@ -125,9 +127,9 @@ export default {
     formatPath: function (path) {
       const pathWithoutExtension = path.substring(0, path.indexOf('.'));
 
-      return this.correctPathSlashes(pathWithoutExtension);
+      return this.formatPathSlashes(pathWithoutExtension);
     },
-    correctPathSlashes: function (string) {
+    formatPathSlashes: function (string) {
       const stringWithFirstTwoCharactersRemoved = string.substr(2);
       
       return stringWithFirstTwoCharactersRemoved.replace(/\\/g,'/');
