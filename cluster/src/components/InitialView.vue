@@ -28,6 +28,9 @@
           </button>
         </div>
       </section>
+      <section v-show="showLoader" class="loader">
+        <div class="loader__loader"></div>
+      </section>
       <section v-show="showResults" class="results">
         <div class="results__tally">
           <h6>Total results: {{totalResults}}</h6>
@@ -35,19 +38,19 @@
         <div class="result" v-for="data in data" v-bind:key="data.id">
           <div class="result__item">
             <span class="result__item-label">File path</span>
-            <span class="result__item-value">{{data.Path}}</span>
+            <span class="result__item-value">{{data.path}}</span>
           </div>
           <div class="result__item">
             <span class="result__item-label">Size</span>
-            <span class="result__item-value">{{data.Size}}</span>
+            <span class="result__item-value">{{data.size}}</span>
           </div>
           <div class="result__item">
             <span class="result__item-label">Last used date</span>
-            <span class="result__item-value">{{data.LastUsed}}</span>
+            <span class="result__item-value">{{data.lastUsed}}</span>
           </div>
           <div class="result__item">
             <span class="result__item-label">Extension</span>
-            <span class="result__item-value">{{data.Extension}}</span>
+            <span class="result__item-value">{{data.extension}}</span>
           </div>
         </div>
       </section>
@@ -68,7 +71,8 @@ export default {
       searchOption: null,
       showFilter: false,
       filePathInput: '',
-      showResults: null
+      showResults: false,
+      showLoader: false
     }
   },
   computed: {
@@ -83,7 +87,9 @@ export default {
     },
     displaySearchResults: async function () {
       this.showResults = false;
+      this.showLoader = true;
       this.data = await this.searchData();
+      this.showLoader = false;
       this.showResults = true;
     },
     searchData: async function () {
@@ -114,17 +120,16 @@ export default {
       const dataItems = [...data];
 
       return dataItems.map(item => {
-        const Path = this.formatPath(item.Path);
-        const Size = this.formatSize(item.Size);
-        const Extension = this.getExtension(item.Path);
-        const LastUsed = this.setLastUsed(item);
-        return {
-          Path,
-          Size,
-          Extension,
-          LastUsed
-        }
+        return this.formatItem(item);
       })
+    },
+    formatItem: function (item) {
+      const path = this.formatPath(item.Path);
+      const size = this.formatSize(item.Size);
+      const extension = this.getExtension(item.Path);
+      const lastUsed = this.setLastUsed(item);
+      
+      return { path, size, extension, lastUsed };
     },
     formatPath: function (path) {
       const pathWithoutExtension = path.substring(0, path.indexOf('.'));
@@ -181,6 +186,24 @@ export default {
     font-size: 12px;
   }
 }
+.loader {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1 0 auto;
+  &__loader {
+    box-sizing: border-box;
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(63, 81, 181, 0.2);
+    border-top-color: rgb(63, 81, 181);
+    border-right-color: rgb(63, 81, 181);
+    animation: spin 1s infinite linear;
+  }
+}
 .results {
   display: flex;
   flex-direction: column;
@@ -216,4 +239,16 @@ export default {
     }
   }
 }
+
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
 </style>
