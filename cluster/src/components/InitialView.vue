@@ -20,11 +20,20 @@
         </div>
         <div class="search-area textfield-area">
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input class="mdl-textfield__input" type="text" id="filePathInput" v-model="filePathInput">
+            <input class="mdl-textfield__input" type="text" v-model="filePathInput">
             <label class="mdl-textfield__label" for="filePathInput">Enter file path...</label>
           </div>
           <button v-on:click="displaySearchResults" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
             Search
+          </button>
+        </div>
+        <div class="search-area slider-area">
+          <p>Filter by file size: {{formattedFileSizeFilterValue}}MB</p>
+          <p style="width:300px">
+            <input class="mdl-slider mdl-js-slider" type="range" id="fileSizeFilter" v-model="fileSizeFilterValue" min="0" max="10000000" value="0" step="1" tabindex="0">
+          </p>
+          <button v-on:click="displaySliderFilterResults" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+            Filter
           </button>
         </div>
       </section>
@@ -42,7 +51,7 @@
           </div>
           <div class="result__item">
             <span class="result__item-label">Size</span>
-            <span class="result__item-value">{{data.size}}</span>
+            <span class="result__item-value">{{data.size}}MB</span>
           </div>
           <div class="result__item">
             <span class="result__item-label">Last used date</span>
@@ -70,15 +79,19 @@ export default {
       isSelectActive: false,
       searchOption: null,
       showFilter: false,
-      filePathInput: '',
+      filePathInput: null,
       showResults: false,
-      showLoader: false
+      showLoader: false,
+      fileSizeFilterValue: 0
     }
   },
   computed: {
     totalResults: function ()  {
       return this.data.length;
     },
+    formattedFileSizeFilterValue: function () {
+      return this.formatSize(parseInt(this.fileSizeFilterValue));
+    }
   },
   methods: {
     onSelectChange: function () {
@@ -94,9 +107,9 @@ export default {
     },
     searchData: async function () {
       const data = await this.getData();
-      const searchString = this.filePathInput.toLowerCase();
+      const searchString = this.filePathInput ? this.filePathInput.toLowerCase() : null;
 
-      return this.filePathInput ? this.filterData(searchString, data) : data;
+      return searchString ? this.filterDataByKey(searchString, 'path', data) : data;
     },
     getData: function () {
       const FULL_SCAN_INDEX = 2;
@@ -111,9 +124,19 @@ export default {
       .then(res => res.json())
       .then(json => this.formatData(json))
     },
-    filterData: function (filterValue, fullScanData) {
-      return fullScanData.filter(item => {
-        return item.Path.indexOf(filterValue) !== -1;
+    filterDataByKey: function (filterValue, key, data) {
+      return data.filter(item => {
+        return item[key].indexOf(filterValue) !== -1;
+      })
+    },
+    displaySliderFilterResults: function () {
+      this.data = this.filterSearchResultsByInteger(this.formattedFileSizeFilterValue);
+    },
+    filterSearchResultsByInteger: function (filterValue) {
+      const data = this.data;
+
+      return data.filter(item => {
+        return item.size < filterValue;
       })
     },
     formatData: function (data) {
@@ -145,7 +168,8 @@ export default {
     formatSize: function (size) {
       const megaBytes = size / 1000000;
       const roundedSize = Math.round(megaBytes * 10) / 10;
-      return `${roundedSize}MB`;
+
+      return roundedSize;
     },
     getExtension: function (path) {
       return path.split('.').pop().toLowerCase();
