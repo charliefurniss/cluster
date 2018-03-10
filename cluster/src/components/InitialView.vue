@@ -8,23 +8,25 @@
     </header>
     <main class="content">
       <section class="search">
-        <select class="select" v-model="searchOption" v-on:change="onSelectChange">
-          <option value="1">Ones scan</option>
-          <option value="3">Tens scan</option>
-          <option value="0">Hundreds scan</option>
-          <option value="5">Thousands scan</option>
-          <option value="4">Tens of thousands scan</option>
-        </select>
-        <label v-show="!isSelectActive">Please select a scan</label>
-      </section>
-      <section class="filter">
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <input class="mdl-textfield__input" type="text" id="filePathInput" v-model="filePathInput">
-          <label class="mdl-textfield__label" for="filePathInput">Enter name of the filepath...</label>
+        <div class="search-area select-area">
+          <select class="select-area__select" v-model="searchOption" v-on:change="onSelectChange">
+            <option value="1">Ones scan</option>
+            <option value="3">Tens scan</option>
+            <option value="0">Hundreds scan</option>
+            <option value="5">Thousands scan</option>
+            <option value="4">Tens of thousands scan</option>
+          </select>
+          <label class="select-area__label" v-show="!isSelectActive">Please select a scan</label>
         </div>
-        <button v-on:click="displaySearchResults" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-          Search
-        </button>
+        <div class="search-area">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="filePathInput" v-model="filePathInput">
+            <label class="mdl-textfield__label" for="filePathInput">Enter name of the filepath...</label>
+          </div>
+          <button v-on:click="displaySearchResults" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+            Search
+          </button>
+        </div>
       </section>
       <section v-show="showResults" class="results">
         <div class="results__tally">
@@ -153,15 +155,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.search, .filter {
+.search-area {
   display: flex;
   flex-shrink: 0;
   align-items: center;
   height: 64px;
   position: relative;
+  button {
+    margin-left: 32px;
+  }
 }
-.search {
-  .select {
+.select-area {
+  &__select {
     outline: none;
     height: 32px;
     background-color: #fff;
@@ -169,15 +174,10 @@ export default {
     width: 200px;
     padding: 24px;
   }
-  label {
+  &__label {
     position: absolute;
     left: 10px;
     font-size: 12px;
-  }
-}
-.filter {
-  button {
-    margin-left: 32px;
   }
 }
 .results {
