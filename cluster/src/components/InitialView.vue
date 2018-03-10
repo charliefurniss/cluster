@@ -28,10 +28,12 @@
           </button>
         </div>
         <div class="search-area slider-area">
-          <p>Filter by file size: {{formattedFileSizeFilterValue}}MB</p>
-          <p style="width:300px">
-            <input class="mdl-slider mdl-js-slider" type="range" id="fileSizeFilter" v-model="fileSizeFilterValue" min="0" max="10000000" value="0" step="1" tabindex="0">
-          </p>
+          <div class="slider">
+            <label class="slider__label">Filter by max file size: {{formattedFileSizeFilterValue}}MB</label>
+            <p class="slider__slider">
+              <input class="mdl-slider mdl-js-slider" type="range" id="fileSizeFilter" v-model="fileSizeFilterValue" min="0" max="10000000" value="0" step="1" tabindex="0">
+            </p>
+          </div>
           <button v-on:click="displaySliderFilterResults" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
             Filter
           </button>
@@ -210,6 +212,22 @@ export default {
     font-size: 12px;
   }
 }
+.slider-area {
+  .slider {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    p {
+      margin: 0;
+    }
+    &__label {
+
+    }
+    &__slider {
+      width: 300px;
+    }
+  }
+}
 .loader {
   align-self: stretch;
   display: flex;
@@ -236,9 +254,6 @@ export default {
   overflow-y: auto;
   &__tally {
     font-weight: 500;
-    h6 {
-      color: rgb(63,81,181);
-    }
   }
   .result {
     display: flex;
@@ -255,7 +270,6 @@ export default {
       }
       &-label {
         font-size: 12px;
-        color: rgb(63,81,181);
       }
       &-value {
         font-weight: 500;

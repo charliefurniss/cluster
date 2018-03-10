@@ -21,7 +21,7 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: rgb(63,81,181);
   display: flex;
   flex-direction: column;
   height: 100%;
