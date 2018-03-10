@@ -18,10 +18,10 @@
           </select>
           <label class="select-area__label" v-show="!isSelectActive">Please select a scan</label>
         </div>
-        <div class="search-area">
+        <div class="search-area textfield-area">
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
             <input class="mdl-textfield__input" type="text" id="filePathInput" v-model="filePathInput">
-            <label class="mdl-textfield__label" for="filePathInput">Enter name of the filepath...</label>
+            <label class="mdl-textfield__label" for="filePathInput">Enter file path...</label>
           </div>
           <button v-on:click="displaySearchResults" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
             Search
@@ -88,7 +88,7 @@ export default {
     },
     searchData: async function () {
       const data = await this.getData();
-      const searchString = this.filePathInput;
+      const searchString = this.filePathInput.toLowerCase();
 
       return this.filePathInput ? this.filterData(searchString, data) : data;
     },
@@ -128,8 +128,9 @@ export default {
     },
     formatPath: function (path) {
       const pathWithoutExtension = path.substring(0, path.indexOf('.'));
+      const pathWithFormattedSlashes = this.formatPathSlashes(pathWithoutExtension);
 
-      return this.formatPathSlashes(pathWithoutExtension);
+      return pathWithFormattedSlashes.toLowerCase();
     },
     formatPathSlashes: function (string) {
       const stringWithFirstTwoCharactersRemoved = string.substr(2);
