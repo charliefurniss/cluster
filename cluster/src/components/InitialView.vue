@@ -27,7 +27,7 @@
             Search
           </button>
         </div>
-        <div class="search-area slider-area">
+        <div v-show="showResults" class="search-area slider-area">
           <div class="slider">
             <label class="slider__label">Filter by max file size: {{formattedFileSizeFilterValue}}MB</label>
             <p class="slider__slider">
@@ -198,18 +198,21 @@ export default {
   }
 }
 .select-area {
-  &__select {
+  select {
     outline: none;
-    height: 32px;
+    height: 48px;
     background-color: #fff;
     border-radius: 4px;
-    width: 200px;
+    width: 300px;
     padding: 24px;
+    position: relative;
+    color: rgb(63,81,181);
+    font-size: 16px;
   }
   &__label {
     position: absolute;
-    left: 10px;
-    font-size: 12px;
+    left: 18px;
+    font-size: 16px;
   }
 }
 .slider-area {
@@ -276,6 +279,10 @@ export default {
       }
     }
   }
+}
+
+button {
+  min-width: 96px;
 }
 
 @keyframes spin {
