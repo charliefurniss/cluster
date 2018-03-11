@@ -1,20 +1,32 @@
 # cluster-test
 
-> A Vue.js project
+Enabling users to search and filter data stored on the http://c7webtest.azurewebsites.net API.
 
-## Assessment
+Users can search via a dropdown menu for data based on grouped data-types or by entering a word by which to search in the textfield. The results are displayed in a list below. They can then filter the results by maximum file size. Because I have not paginated the results I have limited the results to 
 
-I have only partially met the task criteria. 
+I realise that I have only partially met the task criteria. I would still like to:
 
-I am displaying results of search based on scan-type on the page and have a crude function to filter the data by path name.
+* Paginate the results
+* Show only the path name of each result to users initially
+* Show the full details when the user clicks on the path name
+* Add a filter for last used date
 
-Because I haven't yet paginated the data, I have limited the API call to size=50.
+To improve the readability, I would like to:
+
+* Cache the results of previous searches
+* Structure the code better by extracting into helpers, formaters etc
+
 
 ## Build Setup
 
-``` bash
-# install dependencies
+### install node.js
+https://nodejs.org/en/download/package-manager/
+
+### install dependencies
 npm install
 
-# serve with hot reload at localhost:8080
+###
 npm run dev
+
+### navigate to
+http://localhost:8080
