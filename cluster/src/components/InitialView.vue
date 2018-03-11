@@ -56,7 +56,7 @@
             <span class="result__item-value">{{data.size}}MB</span>
           </div>
           <div class="result__item">
-            <span class="result__item-label">Last used date</span>
+            <span class="result__item-label">Last used</span>
             <span class="result__item-value">{{data.lastUsed}}</span>
           </div>
           <div class="result__item">
