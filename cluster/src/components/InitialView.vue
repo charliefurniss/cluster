@@ -232,9 +232,6 @@ export default {
     p {
       margin: 0;
     }
-    &__label {
-
-    }
     &__slider {
       width: 300px;
     }
