@@ -1,4 +1,4 @@
-# cluster-test
+# cluster-scanner
 
 Enabling users to search and filter data stored on the http://c7webtest.azurewebsites.net API.
 
