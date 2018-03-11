@@ -3,7 +3,7 @@
     <header class="mdl-layout__header">
       <div class="mdl-layout-icon"></div>
       <div class="mdl-layout__header-row">
-        <span class="mdl-layout__title">Cluster scans</span>
+        <span class="mdl-layout__title">ClusterScanner</span>
       </div>
     </header>
     <main class="content">
@@ -29,7 +29,7 @@
         </div>
         <div v-show="showResults" class="search-area slider-area">
           <div class="slider">
-            <label class="slider__label">Filter by max file size: {{formattedFileSizeFilterValue}}MB</label>
+            <label class="slider__label">Filter results by max file size: {{formattedFileSizeFilterValue}}MB</label>
             <p class="slider__slider">
               <input class="mdl-slider mdl-js-slider" type="range" id="fileSizeFilter" v-model="fileSizeFilterValue" min="0" max="10000000" value="0" step="1" tabindex="0">
             </p>
@@ -187,6 +187,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.search, .results {
+  padding: 24px 72px;
+  @media screen and (min-width: 1025px) {
+    padding: 24px 80px;
+  }
+}
+.search {
+  border-bottom: 1px solid rgba(0,0,0,0.12);
+}
 .search-area {
   display: flex;
   flex-shrink: 0;
@@ -273,6 +282,7 @@ export default {
       }
       &-label {
         font-size: 12px;
+        color: rgba(0, 0, 0, 0.54);
       }
       &-value {
         font-weight: 500;

@@ -37,10 +37,6 @@ html, body {
     flex-direction: column;
     justify-content: flex-start;
     flex: 1 1 auto;
-    padding: 16px 72px;
-    @media screen and (min-width: 1025px) {
-      padding: 24px 80px;
-    }
   }
 }
 </style>
