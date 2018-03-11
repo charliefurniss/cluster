@@ -21,9 +21,9 @@
         <div class="search-area textfield-area">
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
             <input class="mdl-textfield__input" type="text" v-model="filePathInput">
-            <label class="mdl-textfield__label" for="filePathInput">Enter file path...</label>
+            <label class="mdl-textfield__label" for="filePathInput">Enter term to search in file paths...</label>
           </div>
-          <button v-on:click="displaySearchResults" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+          <button v-on:click="onSearchClick" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
             Search
           </button>
         </div>
@@ -99,6 +99,14 @@ export default {
     onSelectChange: function () {
       this.isSelectActive = true;
       this.displaySearchResults();
+    },
+    onSearchClick: function () {
+      this.resetSelect();
+      this.displaySearchResults();
+    },
+    resetSelect: function () {
+      this.isSelectActive = false;
+      this.searchOption = null;
     },
     displaySearchResults: async function () {
       this.showResults = false;
