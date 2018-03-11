@@ -4,7 +4,9 @@ Enabling users to search and filter data stored on the http://c7webtest.azureweb
 
 Users can search via a dropdown menu for data based on grouped data-types or by entering a word by which to search in the textfield. The results are displayed in a list below. They can then filter the results by maximum file size. Because I have not paginated the results I have limited the results to 
 
-I realise that I have only partially met the task criteria. I would still like to:
+## Next steps
+
+I would still like to:
 
 * Paginate the results
 * Show only the path name of each result to users initially
@@ -19,14 +21,11 @@ To improve the readability, I would like to:
 
 ## Build Setup
 
-### install node.js
+### Install node.js
 https://nodejs.org/en/download/package-manager/
 
-### install dependencies
+### Install dependencies
 npm install
 
-###
-npm run dev
-
-### navigate to
-http://localhost:8080
+### To run locally
+npm run dev and navigate to http://localhost:8080
